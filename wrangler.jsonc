@@ -1,17 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cms-contentful-app",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-05-28",
-  "observability": {
-    "enabled": true
-  },
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "cms-contentful-app"
-    }
-  ]
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
 }

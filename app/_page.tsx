@@ -69,7 +69,7 @@ function HeroPost({
         </div>
         <div>
           <p className="text-lg leading-relaxed mb-4">{shortDescription}</p>
-          {author && <Avatar name={author.name} avatar={author.avatar} />}
+          {author && <Avatar name={author.name} picture={author.picture} />}
         </div>
       </div>
     </section>
@@ -77,7 +77,7 @@ function HeroPost({
 }
 
 export default async function Page() {
-  const { isEnabled } = await draftMode();
+  const { isEnabled } = draftMode();
   const allPosts = await getAllPosts(isEnabled);
   const heroPost = allPosts[0];
   const morePosts = allPosts.slice(1);

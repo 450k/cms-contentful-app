@@ -8,7 +8,7 @@ const POST_GRAPHQL_FIELDS = `
   publishedDate
   author {
     name
-    picture {
+    avatar {
       url
     }
   }
@@ -26,25 +26,27 @@ const POST_GRAPHQL_FIELDS = `
       }
     }
   }
-  relatedBlogPosts {
-    slug
-    title
-    shortDescription
-    featuredImage {
-      url
-    }
-    publishedDate
-    author {
-      name
-      picture {
+  relatedBlogPostsCollection {
+    items {
+      slug
+      title
+      shortDescription
+      featuredImage {
         url
+      }
+      publishedDate
+      author {
+        name
+        avatar {
+          url
+        }
       }
     }
   }
 `;
 
 async function fetchGraphQL(query: string, preview = false): Promise<any> {
-  return fetch(
+  const res = await fetch(
     `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
     {
       method: "POST",
@@ -59,15 +61,22 @@ async function fetchGraphQL(query: string, preview = false): Promise<any> {
       body: JSON.stringify({ query }),
       next: { tags: ["posts"] },
     },
-  ).then((response) => response.json());
+  );
+  const json = await res.json();
+  // デバッグ用ログ（動作確認後に削除してください）
+  if (json.errors) {
+    console.error("GraphQL errors:", JSON.stringify(json.errors, null, 2));
+  }
+  console.log("GraphQL data keys:", JSON.stringify(Object.keys(json.data ?? {})));
+  return json;
 }
 
-function extractPost(fetchResponse: any): any[] {
-  return fetchResponse?.data?.pageBlogPostCollection?.items?.[0];
+function extractPost(fetchResponse: any): any {
+  return fetchResponse?.data?.postCollection?.items?.[0];
 }
 
 function extractPostEntries(fetchResponse: any): any[] {
-  return fetchResponse?.data?.pageBlogPostCollection?.items ?? [];
+  return fetchResponse?.data?.postCollection?.items ?? [];
 }
 
 export async function getPreviewPostBySlug(slug: string | null): Promise<any> {

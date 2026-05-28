@@ -9,30 +9,32 @@ import CoverImage from "../../cover-image";
 import { Markdown } from "@/lib/markdown";
 import { getAllPosts, getPostAndMorePosts } from "@/lib/api";
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+export async function generateStaticParams() {
   const allPosts = await getAllPosts(false);
+
   return allPosts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-export default async function PostPage({ params }: Props) {
-  const { slug } = await params;
+export default async function PostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { isEnabled } = await draftMode();
-  const { post, morePosts } = await getPostAndMorePosts(slug, isEnabled);
+  const { post, morePosts } = await getPostAndMorePosts(params.slug, isEnabled);
+
+
+  // ↓ これを追加
+  console.log("slug:", params.slug);
+  console.log("post:", JSON.stringify(post, null, 2));
 
   if (!post) {
-    return (
-      <div className="container mx-auto px-5 py-20">
-        <p>Post not found for slug: <code>{slug}</code></p>
-        <Link href="/" className="underline">← Back to home</Link>
-      </div>
-    );
+    return <div>Post not found. slug: {params.slug}</div>;
   }
+  // ↑ ここまで
+  
 
   return (
     <div className="container mx-auto px-5">
@@ -48,7 +50,7 @@ export default async function PostPage({ params }: Props) {
         </h1>
         <div className="hidden md:mb-12 md:block">
           {post.author && (
-            <Avatar name={post.author.name} avatar={post.author.avatar} />
+            <Avatar name={post.author.name} picture={post.author.picture} />
           )}
         </div>
         <div className="mb-8 sm:mx-0 md:mb-16">
@@ -57,7 +59,7 @@ export default async function PostPage({ params }: Props) {
         <div className="mx-auto max-w-2xl">
           <div className="mb-6 block md:hidden">
             {post.author && (
-              <Avatar name={post.author.name} avatar={post.author.avatar} />
+              <Avatar name={post.author.name} picture={post.author.picture} />
             )}
           </div>
           <div className="mb-6 text-lg">
@@ -77,20 +79,21 @@ export default async function PostPage({ params }: Props) {
         </div>
       </article>
 
-      {post.relatedBlogPostsCollection?.items?.length > 0 && (
+      {/* Related blog posts */}
+      {post.relatedBlogPosts && post.relatedBlogPosts.length > 0 && (
         <>
           <hr className="border-accent-2 mt-28 mb-24" />
-          <MoreStories morePosts={post.relatedBlogPostsCollection.items} />
+          <MoreStories morePosts={post.relatedBlogPosts} />
         </>
       )}
 
-      {!post.relatedBlogPostsCollection?.items?.length &&
-        morePosts.length > 0 && (
-          <>
-            <hr className="border-accent-2 mt-28 mb-24" />
-            <MoreStories morePosts={morePosts} />
-          </>
-        )}
+      {/* Fallback: other posts if no related posts */}
+      {(!post.relatedBlogPosts || post.relatedBlogPosts.length === 0) && morePosts.length > 0 && (
+        <>
+          <hr className="border-accent-2 mt-28 mb-24" />
+          <MoreStories morePosts={morePosts} />
+        </>
+      )}
     </div>
   );
 }

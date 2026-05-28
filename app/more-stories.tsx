@@ -5,23 +5,23 @@ import CoverImage from "./cover-image";
 
 function PostPreview({
   title,
-  coverImage,
-  date,
-  excerpt,
+  featuredImage,
+  publishedDate,
+  shortDescription,
   author,
   slug,
 }: {
   title: string;
-  coverImage: any;
-  date: string;
-  excerpt: string;
+  featuredImage: any;
+  publishedDate: string;
+  shortDescription: string;
   author: any;
   slug: string;
 }) {
   return (
     <div>
       <div className="mb-5">
-        <CoverImage title={title} slug={slug} url={coverImage.url} />
+        <CoverImage title={title} slug={slug} url={featuredImage.url} />
       </div>
       <h3 className="text-3xl mb-3 leading-snug">
         <Link href={`/posts/${slug}`} className="hover:underline">
@@ -29,9 +29,9 @@ function PostPreview({
         </Link>
       </h3>
       <div className="text-lg mb-4">
-        <DateComponent dateString={date} />
+        <DateComponent dateString={publishedDate} />
       </div>
-      <p className="text-lg leading-relaxed mb-4">{excerpt}</p>
+      <p className="text-lg leading-relaxed mb-4">{shortDescription}</p>
       {author && <Avatar name={author.name} picture={author.picture} />}
     </div>
   );
@@ -48,11 +48,11 @@ export default function MoreStories({ morePosts }: { morePosts: any[] }) {
           <PostPreview
             key={post.slug}
             title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
+            featuredImage={post.featuredImage}
+            publishedDate={post.publishedDate}
             author={post.author}
             slug={post.slug}
-            excerpt={post.excerpt}
+            shortDescription={post.shortDescription}
           />
         ))}
       </div>

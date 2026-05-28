@@ -38,23 +38,23 @@ function Intro() {
 
 function HeroPost({
   title,
-  coverImage,
-  date,
-  excerpt,
+  featuredImage,
+  publishedDate,
+  shortDescription,
   author,
   slug,
 }: {
   title: string;
-  coverImage: any;
-  date: string;
-  excerpt: string;
+  featuredImage: any;
+  publishedDate: string;
+  shortDescription: string;
   author: any;
   slug: string;
 }) {
   return (
     <section>
       <div className="mb-8 md:mb-16">
-        <CoverImage title={title} slug={slug} url={coverImage.url} />
+        <CoverImage title={title} slug={slug} url={featuredImage.url} />
       </div>
       <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 mb-20 md:mb-28">
         <div>
@@ -64,11 +64,11 @@ function HeroPost({
             </Link>
           </h3>
           <div className="mb-4 md:mb-0 text-lg">
-            <Date dateString={date} />
+            <Date dateString={publishedDate} />
           </div>
         </div>
         <div>
-          <p className="text-lg leading-relaxed mb-4">{excerpt}</p>
+          <p className="text-lg leading-relaxed mb-4">{shortDescription}</p>
           {author && <Avatar name={author.name} picture={author.picture} />}
         </div>
       </div>
@@ -88,11 +88,11 @@ export default async function Page() {
       {heroPost && (
         <HeroPost
           title={heroPost.title}
-          coverImage={heroPost.coverImage}
-          date={heroPost.date}
+          featuredImage={heroPost.featuredImage}
+          publishedDate={heroPost.publishedDate}
           author={heroPost.author}
           slug={heroPost.slug}
-          excerpt={heroPost.excerpt}
+          shortDescription={heroPost.shortDescription}
         />
       )}
       <MoreStories morePosts={morePosts} />

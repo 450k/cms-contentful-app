@@ -22,7 +22,7 @@ export default async function PostPage({
 }: {
   params: { slug: string };
 }) {
-  const { isEnabled } = draftMode();
+  const { isEnabled } = await draftMode();
   const { post, morePosts } = await getPostAndMorePosts(params.slug, isEnabled);
 
   return (
@@ -43,7 +43,7 @@ export default async function PostPage({
           )}
         </div>
         <div className="mb-8 sm:mx-0 md:mb-16">
-          <CoverImage title={post.title} url={post.coverImage.url} />
+          <CoverImage title={post.title} url={post.featuredImage.url} />
         </div>
         <div className="mx-auto max-w-2xl">
           <div className="mb-6 block md:hidden">
@@ -52,8 +52,13 @@ export default async function PostPage({
             )}
           </div>
           <div className="mb-6 text-lg">
-            <Date dateString={post.date} />
+            <Date dateString={post.publishedDate} />
           </div>
+          {post.shortDescription && (
+            <p className="text-xl leading-relaxed mb-8 text-gray-600">
+              {post.shortDescription}
+            </p>
+          )}
         </div>
 
         <div className="mx-auto max-w-2xl">
@@ -62,8 +67,22 @@ export default async function PostPage({
           </div>
         </div>
       </article>
-      <hr className="border-accent-2 mt-28 mb-24" />
-      <MoreStories morePosts={morePosts} />
+
+      {/* Related blog posts */}
+      {post.relatedBlogPosts && post.relatedBlogPosts.length > 0 && (
+        <>
+          <hr className="border-accent-2 mt-28 mb-24" />
+          <MoreStories morePosts={post.relatedBlogPosts} />
+        </>
+      )}
+
+      {/* Fallback: other posts if no related posts */}
+      {(!post.relatedBlogPosts || post.relatedBlogPosts.length === 0) && morePosts.length > 0 && (
+        <>
+          <hr className="border-accent-2 mt-28 mb-24" />
+          <MoreStories morePosts={morePosts} />
+        </>
+      )}
     </div>
   );
 }

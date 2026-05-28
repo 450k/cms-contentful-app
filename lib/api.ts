@@ -72,11 +72,11 @@ async function fetchGraphQL(query: string, preview = false): Promise<any> {
 }
 
 function extractPost(fetchResponse: any): any {
-  return fetchResponse?.data?.postCollection?.items?.[0];
+  return fetchResponse?.data?.pageBlogPostCollection?.items?.[0];
 }
 
 function extractPostEntries(fetchResponse: any): any[] {
-  return fetchResponse?.data?.postCollection?.items ?? [];
+  return fetchResponse?.data?.pageBlogPostCollection?.items ?? [];
 }
 
 export async function getPreviewPostBySlug(slug: string | null): Promise<any> {
